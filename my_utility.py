@@ -5,20 +5,25 @@ import numpy  as np
 
     
 # Initialize weights
-def iniW(next,prev):
+def ini_WV(next,prev):
     r = np.sqrt(6/(next+ prev))
     w = np.random.rand(next,prev)
     w = w*2*r-r    
-    return(w)
+    print(w.shape)
+
+    V = np.zeros(w.shape)
+    return(w, V)
     
 # STEP 1: Feed-forward of AE
 def forward_ae(x,w1,w2):
-    z = np.dot(w1,x)
-    a1 = act_sigmoid(z)
+    z1 = np.dot(w1,x)
+    a1 = act_sigmoid(z1)
 
+    z2 = np.dot(w2, a1)
+    a2 = act_sigmoid(z2)
 
-
-    return(a)    
+    a = [ a1, a2 ]
+    return a
 
 #Activation function
 def act_sigmoid(z):
@@ -133,8 +138,10 @@ def load_config():
 # Load data 
 def load_data_csv(fname):
     x = pd.read_csv(fname, header = None)
-    x = np.array(x)  
-    return(x)
+    y = np.array(x[x.columns[-1]])
+    x = np.array(x.drop(labels=[x.columns[-1]], axis=1))
+
+    return (x, y)
 
 # save weights SAE and costo of Softmax
 def save_w_dl(W,Ws,cost):   
